@@ -2,6 +2,7 @@ package CadrastroUsuario.Project.Service;
 
 import CadrastroUsuario.Project.Entity.User;
 import CadrastroUsuario.Project.Repository.UserRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,14 +22,25 @@ public class UserService {
     }
 
     public List<User> list(){
-        return userRepository.findAll();
+        Sort sort = Sort.by("prioridade").descending().and(
+                Sort.by("name").ascending()
+        );
+
+        return userRepository.findAll(sort);
     }
 
     public Optional<User> FindByUser(Long id){
         return userRepository.findById(id);
     }
 
-    public User replace(){
+    public List<User> replace(User user){
+        userRepository.save(user);
+        return list();
+    }
+
+    public List<User> delete(Long id){
+        userRepository.deleteById(id);
+        return list();
     }
 
 
