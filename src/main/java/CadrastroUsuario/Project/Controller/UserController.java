@@ -27,23 +27,23 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     User create(@RequestBody User user){
         return userService.create(user);
     }
 
-    @GetMapping
+    @GetMapping("/list")
     List<User> allList(){
         return userService.list();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/findBy{id}")
     ResponseEntity<User> findByUser(@PathVariable Long id){
         return  userService.FindByUser(id);
 
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/replace{id}")
     ResponseEntity<User> replace(
             @PathVariable Long id,
             @RequestBody User userDetails)
@@ -54,7 +54,7 @@ public class UserController {
         return ResponseEntity.ok(userUpdate);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/delete{id}")
     List<User> delete(@PathVariable("id") Long id){
         return userService.delete(id);
     }
