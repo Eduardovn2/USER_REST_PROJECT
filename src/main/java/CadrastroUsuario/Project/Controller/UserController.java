@@ -17,8 +17,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Optional;
 
+/*CRUD User, Functions:
+* /Client/create - cria um usuario utilizando um ID como primary key gerada automatica, e utilizando um 'name' e 'email' inserido pelo usuario.
+* /Client/list - retorna a lista de todos usuarios e suas informações inseridas.
+* /Client/findby{id} - Função que retorna um usuario de acordo com seu id, pensando em um escalonamento para futuras requisições.
+* /Client/replace{id} - Atualiza um usuario buscando pelo id e informando suas novas credencias
+* /Client/delete{id} - Delete o usuario utilizando seu id, feito para utilidade de administridadores e deletação de sua propria conta.*/
+
 @RestController
-@RequestMapping("/Register")
+@RequestMapping("/Client")
 public class UserController {
 
     public UserService userService;
