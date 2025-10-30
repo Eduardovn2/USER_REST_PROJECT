@@ -2,8 +2,11 @@ package CadrastroUsuario.Project.Service;
 
 import CadrastroUsuario.Project.Entity.User;
 import CadrastroUsuario.Project.Repository.UserRepository;
+import org.aspectj.weaver.ast.Var;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.Mapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,20 +25,28 @@ public class UserService {
     }
 
     public List<User> list(){
-        Sort sort = Sort.by("prioridade").descending().and(
-                Sort.by("name").ascending()
-        );
+        Sort sort = Sort.by("name").ascending();
 
         return userRepository.findAll(sort);
     }
 
-    public Optional<User> FindByUser(Long id){
-        return userRepository.findById(id);
+    //ResponseEntity para retorna o padrao http.
+    public ResponseEntity<User> FindByUser(Long id){
+        //Optional user, requisitado pelo findById.
+        Optional<User> userSearch = userRepository.findById(id);
+        return ResponseEntity.of(userSearch);
     }
 
-    public List<User> replace(User user){
-        userRepository.save(user);
-        return list();
+    public ResponseEntity<User> replace(Long id, User userDetails){
+
+        User userExisting = userRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Usuario com o id " + id + "nao foi encontrado."));
+
+        userExisting.setName(userDetails.getName());
+        userExisting.setEmail(userDetails.getEmail());
+
+        userRepository.save(userExisting);
+        return ResponseEntity.ok(userExisting);
     }
 
     public List<User> delete(Long id){

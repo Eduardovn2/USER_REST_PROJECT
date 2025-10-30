@@ -2,6 +2,7 @@ package CadrastroUsuario.Project.Controller;
 
 import CadrastroUsuario.Project.Entity.User;
 import CadrastroUsuario.Project.Service.UserService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,9 +37,21 @@ public class UserController {
         return userService.list();
     }
 
-    @PutMapping
-    List<User> replace(@RequestBody User user){
-        return userService.replace(user);
+    @GetMapping("/{id}")
+    ResponseEntity<User> findByUser(@PathVariable Long id){
+        return  userService.FindByUser(id);
+
+    }
+
+    @PutMapping("/{id}")
+    ResponseEntity<User> replace(
+            @PathVariable Long id,
+            @RequestBody User userDetails)
+    {
+        User userUpdate = userService.replace(id, userDetails).getBody();
+
+
+        return ResponseEntity.ok(userUpdate);
     }
 
     @DeleteMapping("{id}")
