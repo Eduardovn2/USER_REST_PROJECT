@@ -40,7 +40,7 @@ public class UserController {
         return userService.create(request.get("username"), request.get("password"), request.get("email"));
     }
 
-    @PostMapping("login")
+    @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody Map<String,String> request){
         Optional<User> user = userService.findByUserName(request.get("username"));
         if (user.isPresent() && user.get().getPassword().equals(request.get("password"))){
