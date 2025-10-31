@@ -1,9 +1,11 @@
 package CadrastroUsuario.Project.Controller;
 
 import CadrastroUsuario.Project.Entity.User;
+import CadrastroUsuario.Project.Repository.UserRepository;
 import CadrastroUsuario.Project.Service.UserService;
 import Security.JwtUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,13 +43,13 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    ResponseEntity<?> login(@RequestBody Map<String,String> request){
-        Optional<User> user = userService.findByUserName(request.get("username"));
-        if (user.isPresent() && user.get().getPassword().equals(request.get("password"))){
-            String token = JwtUtil.generateToken(user.get().getUsername());
+    public ResponseEntity<?> login(@RequestBody Map<String, String> request) {
+        Optional<User> usuario = userService.findByUserName(request.get("username"));
+        if (usuario.isPresent() && usuario.get().getPassword().equals(request.get("password"))) {
+            String token = JwtUtil.generateToken(usuario.get().getUsername());
             return ResponseEntity.ok(Map.of("token", token));
         }
-        return ResponseEntity.status(401).body("Credencias invalidas");
+        return ResponseEntity.status(401).body("Credenciais inválidas");
     }
 
     @GetMapping("/list")
