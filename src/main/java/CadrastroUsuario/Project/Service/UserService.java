@@ -1,7 +1,9 @@
 package CadrastroUsuario.Project.Service;
 
 import CadrastroUsuario.Project.Entity.User;
+import CadrastroUsuario.Project.Exception.NotFoundUser;
 import CadrastroUsuario.Project.Repository.UserRepository;
+import org.aspectj.weaver.ast.Not;
 import org.aspectj.weaver.ast.Var;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -31,25 +33,26 @@ public class UserService {
     }
 
     //ResponseEntity para retorna o padrao http.
-    public ResponseEntity<User> FindByUser(Long id){
+    public User FindByUser(Long id){
         //Optional user, requisitado pelo findById.
-        Optional<User> userSearch = userRepository.findById(id);
-        return ResponseEntity.of(userSearch);
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundUser("O usuario com id" + id +" nao foi encontrado."));
     }
 
-    public ResponseEntity<User> replace(Long id, User userDetails){
+    public User replace(Long id, User userDetails){
 
-        User userExisting = userRepository.findById(id)
-                        .orElseThrow(() -> new RuntimeException("Usuario com o id " + id + "nao foi encontrado."));
+        User userExisting = userRepository.findById(id).orElseThrow(() -> new NotFoundUser(id));
 
         userExisting.setName(userDetails.getName());
         userExisting.setEmail(userDetails.getEmail());
 
-        userRepository.save(userExisting);
-        return ResponseEntity.ok(userExisting);
+        return userRepository.save(userExisting);
     }
 
     public List<User> delete(Long id){
+        if(!userRepository.existsById(id)){
+           throw new NotFoundUser("Usuario com o id " + id + " nao foi encontrado.");
+        }
         userRepository.deleteById(id);
         return list();
     }

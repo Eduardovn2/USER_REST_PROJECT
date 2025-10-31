@@ -1,7 +1,9 @@
 package CadrastroUsuario.Project.Controller;
 
 import CadrastroUsuario.Project.Entity.User;
+import CadrastroUsuario.Project.Exception.NotFoundUser;
 import CadrastroUsuario.Project.Service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -45,9 +47,8 @@ public class UserController {
     }
 
     @GetMapping("/findBy{id}")
-    ResponseEntity<User> findByUser(@PathVariable Long id){
-        return  userService.FindByUser(id);
-
+   User findByUser(@PathVariable Long id){
+        return userService.FindByUser(id);
     }
 
     @PutMapping("/replace{id}")
@@ -55,7 +56,7 @@ public class UserController {
             @PathVariable Long id,
             @RequestBody User userDetails)
     {
-        User userUpdate = userService.replace(id, userDetails).getBody();
+        User userUpdate = userService.replace(id, userDetails);
 
 
         return ResponseEntity.ok(userUpdate);
