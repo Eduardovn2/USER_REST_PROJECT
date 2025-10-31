@@ -33,10 +33,9 @@ public class UserService {
     }
 
     //ResponseEntity para retorna o padrao http.
-    public User FindByUser(Long id){
+    public Optional<User> FindByUser(Long id){
         //Optional user, requisitado pelo findById.
-        return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundUser("O usuario com id" + id +" nao foi encontrado."));
+        return userRepository.findById(id);
     }
 
     public User replace(Long id, User userDetails){
