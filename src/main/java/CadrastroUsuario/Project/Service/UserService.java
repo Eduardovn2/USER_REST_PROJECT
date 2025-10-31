@@ -7,6 +7,8 @@ import org.aspectj.weaver.ast.Not;
 import org.aspectj.weaver.ast.Var;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.Mapping;
 
@@ -15,14 +17,20 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    public UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     //Injeção de dependencia jpa.
     public UserService(UserRepository userRepository){
         this.userRepository = userRepository;
+        this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public User create(User user){
+
+
+    public User create(String username, String password, String email){
+        String hashedPassowrd = passwordEncoder.encode(password);
+        User user = new User(username, hashedPassowrd, email);
         return userRepository.save(user);
     }
 
@@ -33,16 +41,20 @@ public class UserService {
     }
 
     //ResponseEntity para retorna o padrao http.
-    public Optional<User> FindByUser(Long id){
+    public Optional<User> FindByUserId(Long id){
         //Optional user, requisitado pelo findById.
         return userRepository.findById(id);
+    }
+
+    public Optional<User> findByUserName(String username){
+        return userRepository.findByUsername(username);
     }
 
     public User replace(Long id, User userDetails){
 
         User userExisting = userRepository.findById(id).orElseThrow(() -> new NotFoundUser(id));
 
-        userExisting.setName(userDetails.getName());
+        userExisting.setUsername(userDetails.getUsername());
         userExisting.setEmail(userDetails.getEmail());
 
         return userRepository.save(userExisting);
